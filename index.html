@@ -1,0 +1,343 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{
+  --page:#ffffff; --card:#f7f9fc; --sub:#f2f5fa; --text:#1f2533; --muted:#8a94a6; --soft:#b9c0cc;
+  --line:#e8edf5; --accent:#5b8ff9; --money:#4b5563; --lgd:#4b5563;
+  --tier1:#dbe7fb; --tier3:#eef2f9; --tierT:#3b4a6b; --day:#eef4fd; --shadow:0 1px 3px rgba(15,23,42,.06);
+}
+html.dark{
+  --page:#1c1c1e; --card:rgba(255,255,255,.07); --sub:rgba(255,255,255,.05); --text:#eef1f6; --muted:#9aa4b2; --soft:#6b7280;
+  --line:rgba(255,255,255,.12); --money:#b6bec9; --lgd:#b6bec9;
+  --tier1:rgba(91,143,249,.28); --tier3:rgba(255,255,255,.08); --tierT:#cfd6e2; --day:rgba(91,143,249,.20); --shadow:none;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{overflow-x:hidden;background:var(--page)}
+body{color:var(--text);margin:0;padding:14px 12px 16px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;font-size:14px;-webkit-font-smoothing:antialiased}
+.tag{font-size:11px;color:var(--soft);margin:0 0 10px;line-height:1.5}
+.tabs{display:flex;gap:6px;margin:0 0 12px}
+.tabs button{flex:1;padding:9px 0;border:0;border-radius:12px;background:var(--card);color:var(--muted);font-size:12px;font-family:inherit}
+.tabs button.on{background:var(--accent);color:#fff;font-weight:600}
+.card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:10px;box-shadow:var(--shadow)}
+.lb{font-size:12px;color:var(--muted)}
+.t2{font-size:11px;color:var(--soft)}
+.row{display:flex;justify-content:space-between;align-items:center}
+.val{font-size:38px;font-weight:700;letter-spacing:-1.5px;line-height:1.15;color:var(--text)}
+.ring{position:relative;width:96px;height:96px;flex:0 0 auto}
+.ring i{position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--accent) 0 0deg,var(--line) 0deg 360deg);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 9px),#000 calc(100% - 9px));mask:radial-gradient(farthest-side,transparent calc(100% - 9px),#000 calc(100% - 9px))}
+.ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2px;font-size:26px;font-weight:700;color:var(--text)}
+.ring b small{font-size:12px;font-weight:400;color:var(--muted)}
+.big{font-size:26px;font-weight:700;line-height:1.1;color:var(--text)}
+.big small{font-size:13px;font-weight:500;color:var(--muted);margin-left:4px}
+.money{font-size:15px;color:var(--money);margin-top:4px}
+.cmp{font-size:11px;line-height:1.8;color:var(--muted);text-align:right}
+.duo{display:flex;gap:10px;margin-bottom:10px}
+.duo>div{flex:1;background:var(--card);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+.duo .r{display:flex;justify-content:space-between;margin-top:8px;font-size:15px;color:var(--text)}
+.seg{display:flex;height:28px;border-radius:8px;overflow:hidden;font-size:11px;color:#fff;line-height:28px;text-align:center}
+.seg>div{overflow:hidden;white-space:nowrap}
+.seg .s3,.seg .s4{color:#3b4a6b}
+.lgd{display:flex;margin-top:6px;font-size:12px;color:var(--lgd);text-align:center}
+.lgd>div{text-align:center}
+.tier{display:flex;gap:6px;font-size:12px;text-align:center;color:var(--tierT)}
+.tier>div{padding:9px 0;border-radius:10px;border-radius:10px}
+.tier>div.on{background:var(--accent);color:#fff;font-weight:600}
+.tier>div.t1x{background:var(--tier1)}.tier>div.t3x{background:var(--tier3)}
+.tlab{display:flex;gap:6px;font-size:11px;text-align:center;color:var(--muted);margin-top:6px}
+.note{font-size:11px;color:var(--muted);margin-top:10px}
+.chart{position:relative;background:var(--sub);border-radius:12px;padding:8px}
+.bars{display:flex;align-items:flex-end;gap:3px;height:130px}
+.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.bar i{display:block;width:100%}
+svg.ln{position:absolute;left:8px;right:8px;top:8px;bottom:8px;width:calc(100% - 16px);height:calc(100% - 16px);pointer-events:none}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.wk{text-align:center;font-size:11px;color:var(--muted)}
+.day{background:var(--day);border-radius:10px;text-align:center;padding:7px 0;line-height:1.35;color:var(--text)}
+.day em{font-style:normal;font-size:13px;font-weight:600;display:block;color:var(--text)}
+.day span{font-size:10px;color:var(--accent);display:block}
+.day u{text-decoration:none;font-size:10px;color:var(--muted);display:block}
+.day.off{background:var(--sub)}
+.day.off em{font-weight:400;color:var(--soft)}
+.xlab{display:flex;gap:3px;margin-top:6px}
+.xlab b{flex:1;font-weight:400;font-size:9px;color:var(--muted);text-align:center}
+.lg{font-size:11px;color:var(--lgd);margin-top:12px}
+section{display:none}section.on{display:block}
+.mswitch{display:flex;gap:6px;margin-bottom:10px}
+.mswitch button{flex:1;padding:6px 0;border:0;border-radius:9px;background:var(--sub);color:var(--muted);font-size:11px;font-family:inherit}
+.mswitch button.on{background:var(--accent);color:#fff}
+</style></head><body>
+<div class="tag" id="tag">正在读取 HA 数据…</div>
+<div class="tabs"><button class="on" data-t="a">电费</button><button data-t="b">日历</button><button data-t="c">日曲线</button><button data-t="d">月曲线</button></div>
+
+<section id="a" class="on">
+  <div class="card"><div class="row">
+    <div><div class="lb">电费余额</div><div class="val" id="v-balance">¥—</div></div>
+    <div style="text-align:center"><div class="lb" style="margin-bottom:6px">预估使用</div><div class="ring"><i id="ring"></i><b><span id="v-days">—</span><small>天</small></b></div></div>
+  </div>
+  <div class="row" style="margin-top:2px"><div class="t2" id="v-account">我的户号</div><div class="t2" id="v-date">—</div></div>
+  </div>
+  <div class="card"><div class="lb">本月用电</div>
+    <div class="row" style="align-items:flex-end;margin-top:6px">
+      <div><div class="big"><span id="v-month">—</span><small>度</small></div><div class="money" id="v-month-charge">—</div></div>
+      <div class="cmp" id="v-cmp">—</div>
+    </div></div>
+  <div class="duo">
+    <div><div class="lb">上月用电</div><div class="r"><span id="v-prev">—</span><span id="v-prev-charge">¥—</span></div></div>
+    <div><div class="lb">本年用电</div><div class="r"><span id="v-year">—</span><span id="v-year-charge">¥—</span></div></div>
+  </div>
+  <div class="card"><div class="lb" style="margin-bottom:8px" id="seg-title">上月用电详情（尖 / 峰 / 平 / 谷）</div>
+    <div class="seg" id="seg"></div>
+    <div class="lgd" id="seglgd"></div>
+    <div class="note" id="segnote">—</div></div>
+  <div class="card"><div class="lb" style="margin-bottom:8px">月用电阶梯（湖南 <span id="v-season">—</span>）</div>
+    <div class="tier" id="tier">
+      <div class="t1x" style="flex:44">第1阶梯</div>
+      <div style="flex:56">第2阶梯</div>
+      <div class="t3x" style="flex:40">第3阶梯</div>
+    </div>
+    <div class="tlab"><div style="flex:44" id="t1lab">0-200度</div><div style="flex:56" id="t2lab">—</div><div style="flex:40" id="t3lab">—</div></div>
+    <div class="note" id="v-tier-note">—</div></div>
+</section>
+
+<section id="b">
+  <div class="card"><div class="lb" style="margin-bottom:10px">每日用电与金额</div>
+    <div class="mswitch" id="ms"></div>
+    <div class="cal" id="cal"></div>
+    <div class="note" id="calnote">—</div></div>
+</section>
+
+<section id="c">
+  <div class="card"><div class="lb" style="margin-bottom:10px">日用电曲线 · 尖/峰/平/谷 堆叠 + 电费折线（近 30 天）</div>
+    <div class="chart"><div class="bars" id="daybars"></div><svg class="ln" id="dayln" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline fill="none" stroke="#ef4444" stroke-width="1.4" vector-effect="non-scaling-stroke"/></svg></div>
+    <div class="xlab" id="daylab"></div>
+    <div class="lg">■ <span style="color:#6d4fc4">尖</span>　■ <span style="color:#8977d9">峰</span>　■ <span style="color:#b9c8f5">平</span>　■ <span style="color:#cfdcf7">谷</span>　—— <span style="color:#ef4444">电费(估算)</span></div></div>
+</section>
+
+<section id="d">
+  <div class="card"><div class="lb" style="margin-bottom:10px">月用电曲线 · 总电量 + 电费</div>
+    <div class="chart"><div class="bars" id="monbars"></div><svg class="ln" id="monln" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline fill="none" stroke="#ef4444" stroke-width="1.4" vector-effect="non-scaling-stroke"/></svg></div>
+    <div class="xlab" id="monlab"></div>
+    <div class="lg">■ <span style="color:#8977d9">月用电量</span>　—— <span style="color:#ef4444">月电费</span></div>
+    <div class="note">国网只提供日级的分时段拆分，月级只有总量与电费，因此月柱不堆叠。</div></div>
+</section>
+
+<script>
+(function(){
+  /* ================= 配置区：只需改这一段 =================
+     在 HA「开发者工具 → 状态」里搜索你的户号末四位，能找到这 7 个实体：
+       sensor.xxx_account_balance              电费余额
+       sensor.xxx_current_month_usage          本月用电量
+       sensor.xxx_previous_settled_month_usage 上一结算月电量
+       sensor.xxx_previous_settled_month_charge上一结算月电费
+       sensor.xxx_current_year_usage           本年累计电量
+       sensor.xxx_current_year_charge          本年累计电费
+       sensor.xxx_previous_daily_usage         上一日用电量（其 attributes 里有日明细）
+     xxx 各户号不同，照抄你自己的实体 ID 即可。
+  ======================================================== */
+  var CONFIG={
+    account:'我的户号',
+    balance:'sensor.xxx_account_balance',
+    month:'sensor.xxx_current_month_usage',
+    prev:'sensor.xxx_previous_settled_month_usage',
+    prevC:'sensor.xxx_previous_settled_month_charge',
+    year:'sensor.xxx_current_year_usage',
+    yearC:'sensor.xxx_current_year_charge',
+    daily:'sensor.xxx_previous_daily_usage'
+  };
+  var IDS={balance:CONFIG.balance,month:CONFIG.month,prev:CONFIG.prev,prevC:CONFIG.prevC,
+           year:CONFIG.year,yearC:CONFIG.yearC,daily:CONFIG.daily};
+  var MONTH_NAMES=['1','2','3','4','5','6','7','8','9','10','11','12'];
+
+  function getHass(){ try{ var el=window.parent.document.querySelector('home-assistant');
+    return (el&&el.hass&&el.hass.states)?el.hass:null; }catch(e){ return null; } }
+  function num(h,id){ var s=h&&h.states[id]; var v=parseFloat(s&&s.state); return isFinite(v)?v:null; }
+  function fx(v,d){ if(v==null||!isFinite(v)) return '—'; return v.toFixed(d==null?1:d); }
+  function money(v){ return v==null?'—':'¥'+v.toFixed(2); }
+
+  function applyTheme(){
+    var root=document.documentElement,dark=null,cs=null;
+    try{ cs=window.parent.getComputedStyle(window.parent.document.documentElement); }catch(e){}
+    try{ var el=window.parent.document.querySelector('home-assistant');
+         if(el&&el.hass&&el.hass.themes){ dark=!!el.hass.themes.darkMode; } }catch(e){}
+    if(dark===null){ dark=window.matchMedia('(prefers-color-scheme: dark)').matches; }
+    root.classList.toggle('dark',dark===true);
+    if(cs){ var pick=function(n,d){var v=(cs.getPropertyValue(n)||'').trim();return v?v:d;};
+      root.style.setProperty('--page',pick('--card-background-color',dark?'#1c1c1e':'#ffffff'));
+      root.style.setProperty('--text',pick('--primary-text-color',dark?'#eef1f6':'#1f2533'));
+      root.style.setProperty('--muted',pick('--secondary-text-color',dark?'#9aa4b2':'#8a94a6')); }
+  }
+
+  var state={model:null,calMonth:null};
+
+  function loadModel(){
+    var h=getHass(); if(!h) return null;
+    var m={balance:num(h,IDS.balance),month:num(h,IDS.month),prev:num(h,IDS.prev),
+           prevC:num(h,IDS.prevC),year:num(h,IDS.year),yearC:num(h,IDS.yearC),
+           daily:[],bills:[],billMonth:null};
+    var ds=h.states[IDS.daily];
+    if(ds&&ds.attributes&&Array.isArray(ds.attributes.daily_history)){
+      m.daily=ds.attributes.daily_history.filter(function(x){return x&&x.usage!=null;});
+    }
+    var ms=h.states[IDS.prev];
+    if(ms&&ms.attributes){
+      if(Array.isArray(ms.attributes.monthly_bill_history)) m.bills=ms.attributes.monthly_bill_history;
+      if(ms.attributes.latest_bill_month) m.billMonth=ms.attributes.latest_bill_month;
+    }
+    return m;
+  }
+
+  function renderMain(m){
+    var accEl=document.getElementById('v-account'); if(accEl) accEl.textContent=CONFIG.account+' · 预付费';
+    document.getElementById('v-balance').textContent=money(m.balance);
+    document.getElementById('v-month').textContent=fx(m.month,1);
+    document.getElementById('v-prev').textContent=fx(m.prev,1);
+    document.getElementById('v-prev-charge').textContent=money(m.prevC);
+    document.getElementById('v-year').textContent=fx(m.year,0);
+    document.getElementById('v-year-charge').textContent=money(m.yearC);
+
+    var avg=(m.prevC&&m.prev)?m.prevC/m.prev:0.6;
+    document.getElementById('v-month-charge').textContent = m.month? ('≈'+money(m.month*avg)) : '—';
+    document.getElementById('v-cmp').innerHTML = m.prev? ('上月均价 '+avg.toFixed(3)+' 元/度<br>本月电费按此估算') : '—';
+
+    var daily=m.prevC? m.prevC/30 : 0;
+    var days=daily>0? m.balance/daily : 0;
+    document.getElementById('v-days').textContent = days>=1? Math.floor(days) : (days>0?'<1':'—');
+    var deg=Math.max(0,Math.min(360,(days/30)*360));
+    document.getElementById('ring').style.background='conic-gradient(var(--accent) 0 '+deg+'deg, var(--line) '+deg+'deg 360deg)';
+
+    var mo=new Date().getMonth()+1;
+    var spring=[3,4,5,9,10,11].indexOf(mo)>=0;
+    var t2=spring?350:450;
+    document.getElementById('v-season').textContent=spring?'春秋季 200 / 350':'冬夏季 200 / 450';
+    document.getElementById('t1lab').textContent='0-200度';
+    document.getElementById('t2lab').textContent='200-'+t2+'度';
+    document.getElementById('t3lab').textContent=t2+'度以上';
+    var tier=!m.month?0:(m.month<=200?1:(m.month<=t2?2:3));
+    var boxes=document.querySelectorAll('#tier>div');
+    for(var i=0;i<boxes.length;i++) boxes[i].className = (i===tier-1?'on':(i===0?'t1x':(i===2?'t3x':'')));
+    var note='—';
+    if(tier===1) note='本月 '+fx(m.month,1)+' 度，第 1 档；距第 2 档还差 '+fx(200-m.month,1)+' 度';
+    else if(tier===2) note='本月 '+fx(m.month,1)+' 度，第 2 档；距第 3 档还差 '+fx(t2-m.month,1)+' 度';
+    else if(tier===3) note='本月 '+fx(m.month,1)+' 度，已进入第 3 档';
+    document.getElementById('v-tier-note').textContent=note;
+
+    // 尖峰平谷：取上一结算月，若没有则取最近 30 天
+    var bm=m.billMonth, seg=[0,0,0,0], segDays=0;
+    var scope='';
+    if(bm){
+      m.daily.forEach(function(d){ if(d.day && d.day.slice(0,7)===bm){ seg[0]+=d.tip||0; seg[1]+=d.peak||0; seg[2]+=d.flat||0; seg[3]+=d.valley||0; segDays++; }});
+      scope=bm.replace('-',' 年 ')+' 月';
+    }
+    if(segDays===0 && m.daily.length){
+      m.daily.slice(-30).forEach(function(d){ seg[0]+=d.tip||0; seg[1]+=d.peak||0; seg[2]+=d.flat||0; seg[3]+=d.valley||0; segDays++; });
+      scope='最近 '+segDays+' 天';
+    }
+    var tot=seg[0]+seg[1]+seg[2]+seg[3];
+    document.getElementById('seg-title').textContent='用电详情（尖 / 峰 / 平 / 谷）· '+scope;
+    var segEl=document.getElementById('seg'), lgEl=document.getElementById('seglgd');
+    if(tot>0){
+      var cls=['s1','s2','s3','s4'], cols=['#6d4fc4','#8977d9','#b9c8f5','#cfdcf7'], names=['尖','峰','平','谷'];
+      var h1='',h2='';
+      for(var k=0;k<4;k++){
+        var w=(seg[k]/tot*100);
+        h1+='<div class="'+cls[k]+'" style="width:'+w.toFixed(1)+'%;background:'+cols[k]+'">'+(seg[k]>=1?seg[k].toFixed(1):'')+'</div>';
+        h2+='<div style="width:'+w.toFixed(1)+'%">'+names[k]+'</div>';
+      }
+      segEl.innerHTML=h1; lgEl.innerHTML=h2;
+      document.getElementById('segnote').textContent='合计 '+tot.toFixed(1)+' 度'+(seg[0]===0?'（'+scope+'无尖峰月份，尖段为 0）':'');
+    } else {
+      segEl.innerHTML=''; lgEl.innerHTML='';
+      document.getElementById('segnote').textContent='暂无分时段数据';
+    }
+
+    var tag=document.getElementById('tag');
+    tag.textContent='真实数据（国家电网集成）· 每日/本月电费为按上月均价估算，其余均为国网原始值';
+  }
+
+  function renderCal(m){
+    var ms=document.getElementById('ms'), cal=document.getElementById('cal');
+    var byMonth={};
+    m.daily.forEach(function(d){ var k=d.day.slice(0,7); (byMonth[k]=byMonth[k]||[]).push(d); });
+    var keys=Object.keys(byMonth).sort();
+    if(!keys.length){ cal.innerHTML='<div class="note">暂无日明细</div>'; return; }
+    if(!state.calMonth||keys.indexOf(state.calMonth)<0) state.calMonth=keys[keys.length-1];
+    ms.innerHTML=keys.map(function(k){
+      var lab=k.slice(0,4)+'年'+(+k.slice(5,7))+'月';
+      return '<button class="'+(k===state.calMonth?'on':'')+'" data-m="'+k+'">'+lab+'</button>';
+    }).join('');
+    Array.prototype.forEach.call(ms.querySelectorAll('button'),function(b){
+      b.onclick=function(){ state.calMonth=b.dataset.m; renderCal(state.model); };
+    });
+    var key=state.calMonth, y=+key.slice(0,4), mo=+key.slice(5,7);
+    var map={}; byMonth[key].forEach(function(d){ map[+d.day.slice(8,10)]=d; });
+    var first=new Date(y,mo-1,1), lead=(first.getDay()+6)%7, total=new Date(y,mo,0).getDate();
+    var html='';
+    ['一','二','三','四','五','六','日'].forEach(function(w){ html+='<div class="wk">'+w+'</div>'; });
+    for(var i=0;i<lead;i++) html+='<div></div>';
+    var avg=(m.prevC&&m.prev)?m.prevC/m.prev:0.6;
+    for(var dd=1;dd<=total;dd++){
+      var rec=map[dd];
+      if(rec){ html+='<div class="day"><em>'+dd+'</em><span>'+rec.usage.toFixed(1)+'度</span><u>≈¥'+(rec.usage*avg).toFixed(1)+'</u></div>'; }
+      else { html+='<div class="day off"><em>'+dd+'</em></div>'; }
+    }
+    cal.innerHTML=html;
+    document.getElementById('calnote').textContent='金额为按上月均价 '+avg.toFixed(3)+' 元/度 估算；国网不返回日级电费。';
+  }
+
+  function renderDay(m){
+    var list=m.daily.slice(-30);
+    var max=0; list.forEach(function(d){ if(d.usage>max)max=d.usage; });
+    if(!max){ return; }
+    var bars='', labs='', pts=[], avg=(m.prevC&&m.prev)?m.prevC/m.prev:0.6;
+    var n=list.length;
+    list.forEach(function(d,i){
+      var t=d.usage||0;
+      var h1=(d.tip||0)/max*118, h2=(d.peak||0)/max*118, h3=(d.flat||0)/max*118, h4=(d.valley||0)/max*118;
+      bars+='<div class="bar"><i style="height:'+h1+'px;background:#6d4fc4"></i><i style="height:'+h2+'px;background:#8977d9"></i><i style="height:'+h3+'px;background:#b9c8f5"></i><i style="height:'+h4+'px;background:#cfdcf7"></i></div>';
+      var dd=+d.day.slice(8,10);
+      labs+='<b>'+(dd===1||i===0||i===n-1?dd:'')+'</b>';
+      var cmax=20*avg;
+      pts.push([i*100/Math.max(1,n-1), 100-(t*avg)/cmax*92-4]);
+    });
+    document.getElementById('daybars').innerHTML=bars;
+    document.getElementById('daylab').innerHTML=labs;
+    var poly=pts.map(function(p){return p[0].toFixed(1)+','+Math.max(0,Math.min(96,p[1])).toFixed(1);}).join(' ');
+    document.getElementById('dayln').querySelector('polyline').setAttribute('points',poly);
+  }
+
+  function renderMon(m){
+    var list=m.bills.slice(-12);
+    if(!list.length) return;
+    var maxU=0,maxC=0;
+    list.forEach(function(b){ if(b.usage>maxU)maxU=b.usage; if(b.charge>maxC)maxC=b.charge; });
+    var bars='',labs='',pts=[],n=list.length;
+    list.forEach(function(b,i){
+      var h=(b.usage/maxU)*118;
+      bars+='<div class="bar"><i style="height:'+h+'px;background:#8977d9;border-radius:3px 3px 0 0"></i></div>';
+      labs+='<b>'+(+b.month.slice(5,7))+'月</b>';
+      pts.push([i*100/Math.max(1,n-1), 100-(b.charge/maxC)*92-4]);
+    });
+    document.getElementById('monbars').innerHTML=bars;
+    document.getElementById('monlab').innerHTML=labs;
+    var poly=pts.map(function(p){return p[0].toFixed(1)+','+Math.max(0,Math.min(96,p[1])).toFixed(1);}).join(' ');
+    document.getElementById('monln').querySelector('polyline').setAttribute('points',poly);
+  }
+
+  function render(){
+    var m=loadModel();
+    if(!m){ document.getElementById('tag').textContent='未读到 HA 数据（请从 HA 内打开本页）'; return; }
+    state.model=m;
+    renderMain(m); renderCal(m); renderDay(m); renderMon(m);
+  }
+
+  applyTheme(); setInterval(applyTheme,2000);
+  render(); setInterval(render,10000);
+
+  var tabs=document.querySelectorAll('.tabs button');
+  Array.prototype.forEach.call(tabs,function(b){ b.onclick=function(){
+    Array.prototype.forEach.call(tabs,function(x){x.classList.remove('on')});
+    Array.prototype.forEach.call(document.querySelectorAll('section'),function(x){x.classList.remove('on')});
+    b.classList.add('on'); document.getElementById(b.dataset.t).classList.add('on');
+  };});
+})();
+</script>
+</body></html>
